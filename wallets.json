@@ -3,7 +3,7 @@
     "username": "bad",
     "address": "EDU_93B7B6FED01DCC24",
     "password_hash": "c6d7b94da70bad9d4c40ca847761e866be9eaebfab5690cb16b4337421724ea2:4507b03d15f4264945d09a6edf47ca0d86742df9841416b35edb10f477e4e59b",
-    "balance": 9100.0,
+    "balance": 8700.0,
     "created_at": null,
     "avatar": "\ud83d\udc64"
   },
@@ -21,6 +21,14 @@
     "password_hash": "f056c8f1e7c7f2c6cbd6fac62b6ddcc540dab5ef805052a010c613092cbac0f5:6600c5ce9fabc070e6f892e68e6d67bdcc48a2bb6f65c7e334620766f103befd",
     "balance": 500.0,
     "created_at": "2026-02-10T10:17:49.058020",
+    "avatar": "\ud83d\udc64"
+  },
+  "badje": {
+    "username": "badje",
+    "address": "EDU_F4DC67F9AC7D2836",
+    "password_hash": "535c2a4fcb9ec3422e9ab8a434637171693c5f285205c2ea22d9ccfe7b293825:fcab5cf9f044c1fe0fa2811f6267b0e4ddc326fa6fa80acf13a845023954dcd2",
+    "balance": 450.0,
+    "created_at": "2026-02-10T19:43:01.395846",
     "avatar": "\ud83d\udc64"
   }
 }
