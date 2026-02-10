@@ -1,0 +1,26 @@
+{
+  "bad": {
+    "username": "bad",
+    "address": "EDU_93B7B6FED01DCC24",
+    "password_hash": "c6d7b94da70bad9d4c40ca847761e866be9eaebfab5690cb16b4337421724ea2:4507b03d15f4264945d09a6edf47ca0d86742df9841416b35edb10f477e4e59b",
+    "balance": 9100.0,
+    "created_at": null,
+    "avatar": "\ud83d\udc64"
+  },
+  "aldrin": {
+    "username": "aldrin",
+    "address": "EDU_58D42E27E0CB3527",
+    "password_hash": "665a1950f11b21ddc4a6e2a76fde700adc4fbaf488b20720be95b53457469a8b:5ca60328d28afc996fa52530b4b12b86fc059cbb97fa5146eef83fce882c9a2c",
+    "balance": 500.0,
+    "created_at": "2026-02-10T09:45:14.755940",
+    "avatar": "\ud83d\udc64"
+  },
+  "ryoji": {
+    "username": "ryoji",
+    "address": "EDU_DA21DE2A0F49CD5E",
+    "password_hash": "f056c8f1e7c7f2c6cbd6fac62b6ddcc540dab5ef805052a010c613092cbac0f5:6600c5ce9fabc070e6f892e68e6d67bdcc48a2bb6f65c7e334620766f103befd",
+    "balance": 500.0,
+    "created_at": "2026-02-10T10:17:49.058020",
+    "avatar": "\ud83d\udc64"
+  }
+}

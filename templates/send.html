@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Send EDU{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h1>📤 Send EDU Tokens</h1>
+        <p class="balance-info">Available Balance: <strong>{{ "%.2f"|format(user.balance) }} EDU</strong></p>
+        
+        <form method="POST" class="form">
+            <div class="form-group">
+                <label for="receiver_address">Receiver Address</label>
+                <input type="text" id="receiver_address" name="receiver_address" required 
+                       placeholder="EDU_XXXXXXXXXXXXXXXX" class="form-control">
+                <small>Enter the recipient's wallet address</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="amount">Amount (EDU)</label>
+                <input type="number" id="amount" name="amount" step="0.01" min="0.01" 
+                       max="{{ user.balance }}" required class="form-control">
+                <small>Maximum: {{ "%.2f"|format(user.balance) }} EDU</small>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">Send Transaction</button>
+        </form>
+        
+        <div class="info-box">
+            <p><strong>ℹ️ Note:</strong> Transactions are added to the pending pool and will be confirmed when a block is mined.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

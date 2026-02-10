@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Mine Blocks{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>⛏️ Mine Blocks</h1>
+    
+    <div class="mining-info">
+        <div class="info-card">
+            <h3>⏳ Pending Transactions</h3>
+            <p class="info-value">{{ pending_count }}</p>
+        </div>
+        <div class="info-card">
+            <h3>⚙️ Consensus</h3>
+            <p class="info-value">{{ consensus.upper() }}</p>
+        </div>
+        <div class="info-card">
+            <h3>💎 Block Reward</h3>
+            <p class="info-value">50 EDU</p>
+        </div>
+        {% if consensus == 'pow' %}
+        <div class="info-card">
+            <h3>🔧 Difficulty</h3>
+            <p class="info-value">{{ difficulty }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if pending_count > 0 %}
+    <form method="POST" class="mining-form">
+        <button type="submit" class="btn btn-primary btn-large">Start Mining</button>
+    </form>
+    
+    <h2>📋 Pending Transactions</h2>
+    <div class="transactions-list">
+        {% for tx in pending_transactions %}
+        <div class="transaction-card">
+            <p><strong>From:</strong> <code>{{ tx.sender|format_hash(16) }}</code></p>
+            <p><strong>To:</strong> <code>{{ tx.receiver|format_hash(16) }}</code></p>
+            <p><strong>Amount:</strong> {{ "%.2f"|format(tx.amount) }} EDU</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-data">
+        <p>No pending transactions to mine</p>
+        <a href="{{ url_for('send_transaction') }}" class="btn btn-secondary">Create Transaction</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

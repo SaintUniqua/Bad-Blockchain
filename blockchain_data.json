@@ -1,0 +1,97 @@
+{
+  "chain": [
+    {
+      "index": 0,
+      "timestamp": 1770692191.4781973,
+      "transactions": [
+        {
+          "sender": "SYSTEM",
+          "receiver": "GENESIS_POOL",
+          "amount": 10000000,
+          "timestamp": 1770692191.4780877,
+          "transaction_hash": "860c62024b3ccc177e8a81dc08ebdbc8071904e35cd0115d8db5c3d2333ab018"
+        }
+      ],
+      "nonce": 0,
+      "previous_hash": "0",
+      "hash": "0b08b56a6f4df15c11fb8d66099a9e7b8b9f354ca3d584b8d3e97cbc44f2e3ec"
+    },
+    {
+      "index": 1,
+      "timestamp": 1770692191.497895,
+      "transactions": [
+        {
+          "sender": "GENESIS_POOL",
+          "receiver": "EDU_93B7B6FED01DCC24",
+          "amount": 10000.0,
+          "timestamp": 1770692191.4965189,
+          "transaction_hash": "925d071d5a8a6f0afc4fc94f481350911c14e81bd136e36193e47064e8010077"
+        },
+        {
+          "sender": "SYSTEM",
+          "receiver": "SYSTEM",
+          "amount": 50.0,
+          "timestamp": 1770692191.4978476,
+          "transaction_hash": "30ce79021de72d85ad738743ac185d6a3cba7ce2607338b8bcb76bb9fb1fa38c"
+        }
+      ],
+      "nonce": 19915,
+      "previous_hash": "0b08b56a6f4df15c11fb8d66099a9e7b8b9f354ca3d584b8d3e97cbc44f2e3ec",
+      "hash": "000081486cc60e52968545da67e3bafaef522d4de7eeea87ce409746f1c35288"
+    },
+    {
+      "index": 2,
+      "timestamp": 1770692381.8363667,
+      "transactions": [
+        {
+          "sender": "EDU_93B7B6FED01DCC24",
+          "receiver": "EDU_58D42E27E0CB3527",
+          "amount": 450.0,
+          "timestamp": 1770692362.0579598,
+          "transaction_hash": "8a314256e67a9952fd7a2fd2ef8a4ac56eadea9ac1f0947d5d388a1de681034b"
+        },
+        {
+          "sender": "SYSTEM",
+          "receiver": "EDU_58D42E27E0CB3527",
+          "amount": 50.0,
+          "timestamp": 1770692381.8363247,
+          "transaction_hash": "151a70a8bc6e93bbc7ebed5698a9a41aab83aedb6b94193c2aff89bc7bf5fa2d"
+        }
+      ],
+      "nonce": 35999,
+      "previous_hash": "000081486cc60e52968545da67e3bafaef522d4de7eeea87ce409746f1c35288",
+      "hash": "00003c21f93ab6959756f802a69a181ffd0b722ed6eb41c99884a62fa01b1ed5"
+    },
+    {
+      "index": 3,
+      "timestamp": 1770692523.403782,
+      "transactions": [
+        {
+          "sender": "EDU_93B7B6FED01DCC24",
+          "receiver": "EDU_DA21DE2A0F49CD5E",
+          "amount": 450.0,
+          "timestamp": 1770692504.2357635,
+          "transaction_hash": "f15c7808994a730cce466ef813358dd14f330f05def39188caa1404905561bfe"
+        },
+        {
+          "sender": "SYSTEM",
+          "receiver": "EDU_DA21DE2A0F49CD5E",
+          "amount": 50.0,
+          "timestamp": 1770692523.4037535,
+          "transaction_hash": "85e31b9cc9a30258cdc72432e619bee971db21524d474f0df0793e6fba0561c1"
+        }
+      ],
+      "nonce": 13989,
+      "previous_hash": "00003c21f93ab6959756f802a69a181ffd0b722ed6eb41c99884a62fa01b1ed5",
+      "hash": "00003d8886b883287cfa4c4db6be6c0a6b79a691e3ef6a2afd41a3b44ca91137"
+    }
+  ],
+  "pending_transactions": [],
+  "settings": {
+    "difficulty": 4,
+    "mining_reward": 50.0,
+    "consensus": "pow",
+    "hash_algorithm": "sha256",
+    "total_supply": 10000000
+  }
+}

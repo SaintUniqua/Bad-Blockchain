@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+{% block title %}Profile Settings{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>👤 Profile Settings</h1>
+    
+    <div class="profile-container">
+        <!-- Avatar Selection -->
+        <div class="profile-section">
+            <h2>Profile Picture</h2>
+            <p class="section-description">Choose an avatar for your account</p>
+            
+            <form method="POST" class="avatar-form">
+                <div class="avatar-grid">
+                    <label class="avatar-option {% if user.avatar == '👤' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="👤" {% if user.avatar == '👤' %}checked{% endif %}>
+                        <div class="avatar-emoji">👤</div>
+                    </label>
+                    <label class="avatar-option {% if user.avatar == '😀' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="😀" {% if user.avatar == '😀' %}checked{% endif %}>
+                        <div class="avatar-emoji">😀</div>
+                    </label>
+                    <label class="avatar-option {% if user.avatar == '😎' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="😎" {% if user.avatar == '😎' %}checked{% endif %}>
+                        <div class="avatar-emoji">😎</div>
+                    </label>
+                    <label class="avatar-option {% if user.avatar == '🤓' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="🤓" {% if user.avatar == '🤓' %}checked{% endif %}>
+                        <div class="avatar-emoji">🤓</div>
+                    </label>
+                    <label class="avatar-option {% if user.avatar == '🧑‍💻' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="🧑‍💻" {% if user.avatar == '🧑‍💻' %}checked{% endif %}>
+                        <div class="avatar-emoji">🧑‍💻</div>
+                    </label>
+                    <label class="avatar-option {% if user.avatar == '🚀' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="🚀" {% if user.avatar == '🚀' %}checked{% endif %}>
+                        <div class="avatar-emoji">🚀</div>
+                    </label>
+                    <label class="avatar-option {% if user.avatar == '🦄' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="🦄" {% if user.avatar == '🦄' %}checked{% endif %}>
+                        <div class="avatar-emoji">🦄</div>
+                    </label>
+                    <label class="avatar-option {% if user.avatar == '🔥' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="🔥" {% if user.avatar == '🔥' %}checked{% endif %}>
+                        <div class="avatar-emoji">🔥</div>
+                    </label>
+                    <label class="avatar-option {% if user.avatar == '⚡' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="⚡" {% if user.avatar == '⚡' %}checked{% endif %}>
+                        <div class="avatar-emoji">⚡</div>
+                    </label>
+                    <label class="avatar-option {% if user.avatar == '💎' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="💎" {% if user.avatar == '💎' %}checked{% endif %}>
+                        <div class="avatar-emoji">💎</div>
+                    </label>
+                    <label class="avatar-option {% if user.avatar == '🌟' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="🌟" {% if user.avatar == '🌟' %}checked{% endif %}>
+                        <div class="avatar-emoji">🌟</div>
+                    </label>
+                    <label class="avatar-option {% if user.avatar == '🎮' %}selected{% endif %}">
+                        <input type="radio" name="avatar" value="🎮" {% if user.avatar == '🎮' %}checked{% endif %}>
+                        <div class="avatar-emoji">🎮</div>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Avatar</button>
+            </form>
+        </div>
+        
+        <!-- Account Information -->
+        <div class="profile-section">
+            <h2>Account Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Username</span>
+                    <span class="info-value">{{ user.username }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Wallet Address</span>
+                    <span class="info-value"><code>{{ user.address }}</code></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Balance</span>
+                    <span class="info-value">{{ "%.2f"|format(user.balance) }} EDU</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Account Created</span>
+                    <span class="info-value">{{ user.created_at if user.created_at else 'N/A' }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Change Password -->
+        <div class="profile-section">
+            <h2>Change Password</h2>
+            <p class="section-description">Update your account password</p>
+            
+            <form method="POST" class="password-form">
+                <div class="form-group">
+                    <label for="current_password">Current Password</label>
+                    <input type="password" id="current_password" name="current_password" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="new_password">New Password</label>
+                    <input type="password" id="new_password" name="new_password" minlength="6" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm_password">Confirm New Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control">
+                </div>
+                
+                <button type="submit" class="btn btn-secondary">Update Password</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.profile-section {
+    background: var(--bg-primary);
+    backdrop-filter: blur(20px);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+}
+
+[data-theme="dark"] .profile-section {
+    background: rgba(17, 24, 39, 0.5);
+}
+
+.profile-section h2 {
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.section-description {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* Avatar Grid */
+.avatar-form {
+    width: 100%;
+}
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.avatar-option {
+    position: relative;
+    cursor: pointer;
+    aspect-ratio: 1;
+}
+
+.avatar-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.avatar-emoji {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .avatar-emoji {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.avatar-option:hover .avatar-emoji {
+    transform: scale(1.1);
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.avatar-option.selected .avatar-emoji,
+.avatar-option input[type="radio"]:checked + .avatar-emoji {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: var(--primary);
+    border-width: 3px;
+    box-shadow: 0 0 24px rgba(59, 130, 246, 0.4);
+}
+
+/* Info Grid */
+.info-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .info-item {
+    background: rgba(31, 41, 55, 0.5);
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.info-value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Password Form */
+.password-form {
+    max-width: 500px;
+}
+
+.password-form .btn {
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .avatar-grid {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 0.75rem;
+    }
+    
+    .avatar-emoji {
+        font-size: 2rem;
+    }
+    
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Blockchain Explorer{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>🔍 Blockchain Explorer</h1>
+    
+    <div class="chain-stats">
+        <p><strong>Total Blocks:</strong> {{ chain_info.length }}</p>
+        <p><strong>Total Transactions:</strong> {{ chain_info.total_transactions }}</p>
+        <p><strong>Consensus:</strong> {{ chain_info.consensus.upper() }}</p>
+        <p><strong>Algorithm:</strong> {{ chain_info.hash_algorithm.upper() }}</p>
+    </div>
+
+    <div class="blocks-list">
+        {% for block in blocks %}
+        <div class="block-card">
+            <div class="block-header">
+                <span class="block-index">Block #{{ block.index }}</span>
+                <span class="block-time">{{ block.timestamp|format_timestamp }}</span>
+            </div>
+            <div class="block-info">
+                <p><strong>Hash:</strong> <code>{{ block.hash }}</code></p>
+                <p><strong>Previous Hash:</strong> <code>{{ block.previous_hash }}</code></p>
+                <p><strong>Transactions:</strong> {{ block.transactions|length }}</p>
+                <p><strong>Nonce:</strong> {{ block.nonce }}</p>
+            </div>
+            <a href="{{ url_for('block_detail', index=block.index) }}" class="btn btn-sm">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

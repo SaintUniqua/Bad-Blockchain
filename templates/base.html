@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EduChain{% endblock %} - Educational Blockchain</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <!-- Logo -->
+            <div class="sidebar-logo" title="EduChain">⛓️</div>
+            
+            <!-- Navigation Items (User Actions Only) -->
+            <nav class="nav-items">
+                {% if user %}
+                    <a href="{{ url_for('dashboard') }}" class="sidebar-nav-item">
+                        <div class="nav-icon-wrapper">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="3" y="3" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <rect x="14" y="3" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <rect x="14" y="14" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <rect x="3" y="14" width="7" height="7" rx="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                    
+                    <a href="{{ url_for('send_transaction') }}" class="sidebar-nav-item">
+                        <div class="nav-icon-wrapper">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <line x1="22" y1="2" x2="11" y2="13" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <span class="nav-text">Send</span>
+                    </a>
+                    
+                    <a href="{{ url_for('mine') }}" class="sidebar-nav-item">
+                        <div class="nav-icon-wrapper">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <polyline points="14 2 14 8 20 8" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <line x1="12" y1="18" x2="12" y2="12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <line x1="9" y1="15" x2="15" y2="15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <span class="nav-text">Mine</span>
+                    </a>
+                    
+                    <a href="{{ url_for('settings') }}" class="sidebar-nav-item">
+                        <div class="nav-icon-wrapper">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <span class="nav-text">Blockchain</span>
+                    </a>
+                    
+                    <a href="{{ url_for('profile') }}" class="sidebar-nav-item">
+                        <div class="nav-icon-wrapper">
+                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <span class="nav-text">Profile</span>
+                    </a>
+                {% endif %}
+            </nav>
+            
+            <!-- Bottom Section: Profile & Logout -->
+            {% if user %}
+            <div class="sidebar-bottom">
+                <!-- User Profile Card -->
+                <div class="sidebar-user-card">
+                    <div class="user-avatar">
+                        <span class="user-avatar-emoji">{{ user.avatar if user.avatar else '👤' }}</span>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">{{ user.username }}</div>
+                        <div class="user-balance">{{ "%.2f"|format(user.balance) }} EDU</div>
+                    </div>
+                </div>
+                
+                <!-- Logout Button -->
+                <a href="{{ url_for('logout') }}" class="sidebar-logout-btn">
+                    <svg class="logout-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        <polyline points="16 17 21 12 16 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        <line x1="21" y1="12" x2="9" y2="12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    </svg>
+                    <span class="logout-text">Logout</span>
+                </a>
+            </div>
+            {% endif %}
+            
+            <!-- Dark Mode Toggle -->
+            <div class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
+                <svg class="sun-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    <line x1="12" y1="1" x2="12" y2="3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    <line x1="12" y1="21" x2="12" y2="23" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    <line x1="1" y1="12" x2="3" y2="12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    <line x1="21" y1="12" x2="23" y2="12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                </svg>
+                <svg class="moon-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                </svg>
+            </div>
+        </aside>
+        
+        <!-- Main Content Wrapper -->
+        <div class="main-content-wrapper">
+            <!-- Top Navigation Bar -->
+            <nav class="navbar">
+                <div class="container">
+                    <div class="nav-brand">
+                        <a href="{{ url_for('home') }}"><span class="logo">⛓️ EduChain</span></a>
+                    </div>
+                    
+                    <!-- Public Navigation Links (Right Side) -->
+                    <div class="nav-right">
+                        <a href="{{ url_for('home') }}" class="header-nav-link">
+                            <svg class="header-nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <polyline points="9 22 9 12 15 12 15 22" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                            </svg>
+                            <span>Home</span>
+                        </a>
+                        <a href="{{ url_for('explorer') }}" class="header-nav-link">
+                            <svg class="header-nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="11" cy="11" r="8" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <path d="m21 21-4.35-4.35" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                            </svg>
+                            <span>Explorer</span>
+                        </a>
+                        <a href="{{ url_for('transactions') }}" class="header-nav-link">
+                            <svg class="header-nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                            </svg>
+                            <span>Transactions</span>
+                        </a>
+                        <a href="{{ url_for('about') }}" class="header-nav-link">
+                            <svg class="header-nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                <path d="M12 16v-4M12 8h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                            </svg>
+                            <span>About</span>
+                        </a>
+                        
+                        {% if not user %}
+                            <a href="{{ url_for('login') }}" class="nav-link btn-login">Login</a>
+                            <a href="{{ url_for('register') }}" class="nav-link btn-register">Register</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+            
+            <!-- Main Content -->
+            <main class="main-content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="container">
+                            <div class="flash-messages">
+                                {% for category, message in messages %}
+                                    <div class="flash-message flash-{{ category }}">
+                                        <span class="flash-icon">
+                                            {% if category == 'success' %}✓{% endif %}
+                                            {% if category == 'danger' %}✗{% endif %}
+                                            {% if category == 'warning' %}⚠{% endif %}
+                                            {% if category == 'info' %}ℹ{% endif %}
+                                        </span>
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                
+                {% block content %}{% endblock %}
+            </main>
+            
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="container">
+                    <p>🎓 EduChain - Educational Blockchain Platform</p>
+                    <p class="footer-note">For learning purposes only. Not a real cryptocurrency.</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/educhain.js') }}"></script>
+</body>
+</html>

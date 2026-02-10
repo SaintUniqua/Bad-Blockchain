@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="about-content">
+        <h1>🎓 About EduChain</h1>
+        
+        <section>
+            <h2>What is EduChain?</h2>
+            <p>EduChain is an educational blockchain platform designed to help you learn blockchain technology through hands-on experience. It implements core blockchain concepts including distributed ledger, consensus mechanisms, mining, and cryptocurrency transactions.</p>
+        </section>
+
+        <section>
+            <h2>How Does Blockchain Work?</h2>
+            <p>A blockchain is a distributed ledger that stores data in blocks linked together through cryptographic hashes. Each block contains:</p>
+            <ul>
+                <li><strong>Index:</strong> Block number in the chain</li>
+                <li><strong>Timestamp:</strong> When the block was created</li>
+                <li><strong>Transactions:</strong> List of transactions in the block</li>
+                <li><strong>Hash:</strong> Unique identifier of the block</li>
+                <li><strong>Previous Hash:</strong> Link to the previous block</li>
+                <li><strong>Nonce:</strong> Number used in mining (Proof of Work)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Consensus Mechanisms</h2>
+            <h3>Proof of Work (PoW)</h3>
+            <p>Miners compete to find a nonce that produces a hash meeting difficulty requirements. This requires computational power and makes the blockchain secure against tampering.</p>
+            
+            <h3>Proof of Stake (PoS)</h3>
+            <p>Validators are chosen based on their stake (balance). This is more energy-efficient than PoW but requires careful implementation to ensure security.</p>
+        </section>
+
+        <section>
+            <h2>Key Features</h2>
+            <ul>
+                <li>✅ Complete blockchain implementation from scratch</li>
+                <li>✅ Multiple hashing algorithms (MD5, SHA-1, SHA-256, SHA-512)</li>
+                <li>✅ PoW and PoS consensus mechanisms</li>
+                <li>✅ Wallet system with secure authentication</li>
+                <li>✅ Transaction processing and validation</li>
+                <li>✅ Mining rewards</li>
+                <li>✅ Block explorer</li>
+                <li>✅ Real-time balance calculation</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Educational Limitations</h2>
+            <p>This is a simplified blockchain for learning. Real blockchains like Bitcoin have additional features:</p>
+            <ul>
+                <li>Peer-to-peer network communication</li>
+                <li>Merkle trees for efficient verification</li>
+                <li>Digital signatures (ECDSA)</li>
+                <li>Transaction fees</li>
+                <li>Smart contracts (Ethereum)</li>
+                <li>Advanced consensus protocols</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>⚠️ Important Notice</h2>
+            <p class="warning">This application is for educational purposes only. Do not use it for real financial transactions. The EDU token has no real-world value.</p>
+        </section>
+    </div>
+</div>
+{% endblock %}

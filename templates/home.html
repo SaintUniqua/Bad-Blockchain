@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <h1>🎓 Welcome to EduChain</h1>
+        <p class="hero-subtitle">Learn Blockchain Technology Through Interactive Experience</p>
+        {% if not user %}
+        <div class="hero-actions">
+            <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
+            <a href="{{ url_for('about') }}" class="btn btn-secondary">Learn More</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">⛓️</div>
+            <div class="stat-value">{{ chain_info.length }}</div>
+            <div class="stat-label">Total Blocks</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div class="stat-value">{{ chain_info.total_transactions }}</div>
+            <div class="stat-label">Total Transactions</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-value">{{ chain_info.pending_transactions }}</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card {% if chain_info.is_valid %}stat-valid{% else %}stat-invalid{% endif %}">
+            <div class="stat-icon">{% if chain_info.is_valid %}✓{% else %}✗{% endif %}</div>
+            <div class="stat-value">{% if chain_info.is_valid %}Valid{% else %}Invalid{% endif %}</div>
+            <div class="stat-label">Blockchain Status</div>
+        </div>
+    </div>
+
+    <h2>🔗 Recent Blocks</h2>
+    <div class="blocks-list">
+        {% for block in recent_blocks %}
+        <div class="block-card">
+            <div class="block-header">
+                <span class="block-index">Block #{{ block.index }}</span>
+                <span class="block-time">{{ block.timestamp|format_timestamp }}</span>
+            </div>
+            <div class="block-info">
+                <p><strong>Hash:</strong> <code>{{ block.hash|format_hash(32) }}</code></p>
+                <p><strong>Transactions:</strong> {{ block.transactions|length }}</p>
+                <p><strong>Nonce:</strong> {{ block.nonce }}</p>
+            </div>
+            <a href="{{ url_for('block_detail', index=block.index) }}" class="btn btn-sm">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

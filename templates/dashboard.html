@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>💼 Wallet Dashboard</h1>
+    
+    <div class="wallet-card">
+        <div class="wallet-header">
+            <h2>👤 {{ user.username }}</h2>
+            <p class="wallet-address">{{ user.address }}</p>
+        </div>
+        <div class="wallet-balance">
+            <span class="balance-label">Balance</span>
+            <span class="balance-value">{{ "%.2f"|format(user.balance) }} EDU</span>
+        </div>
+        <div class="wallet-actions">
+            <a href="{{ url_for('send_transaction') }}" class="btn btn-primary">Send EDU</a>
+            <a href="{{ url_for('mine') }}" class="btn btn-secondary">Mine Blocks</a>
+        </div>
+    </div>
+
+    <h2>📜 Recent Transactions</h2>
+    {% if transactions %}
+    <div class="transactions-list">
+        {% for tx in transactions %}
+        <div class="transaction-card {% if tx.receiver == user.address %}tx-received{% else %}tx-sent{% endif %}">
+            <div class="tx-header">
+                <span class="tx-type">{% if tx.receiver == user.address %}📥 Received{% else %}📤 Sent{% endif %}</span>
+                <span class="tx-amount">{{ "%.2f"|format(tx.amount) }} EDU</span>
+            </div>
+            <div class="tx-details">
+                <p><strong>From:</strong> <code>{{ tx.sender|format_hash(16) }}</code></p>
+                <p><strong>To:</strong> <code>{{ tx.receiver|format_hash(16) }}</code></p>
+                <p><strong>Time:</strong> {{ tx.timestamp|format_timestamp }}</p>
+            </div>
+            <a href="{{ url_for('transaction_detail', transaction_hash=tx.transaction_hash) }}" class="btn btn-sm">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="no-data">No transactions yet</p>
+    {% endif %}
+</div>
+{% endblock %}

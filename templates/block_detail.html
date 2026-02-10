@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Block #{{ block.index }}{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>🔗 Block #{{ block.index }}</h1>
+    
+    <div class="detail-card">
+        <h2>Block Information</h2>
+        <table class="detail-table">
+            <tr><td>Index</td><td>{{ block.index }}</td></tr>
+            <tr><td>Timestamp</td><td>{{ block.timestamp|format_timestamp }}</td></tr>
+            <tr><td>Hash</td><td><code>{{ block.hash }}</code></td></tr>
+            <tr><td>Previous Hash</td><td><code>{{ block.previous_hash }}</code></td></tr>
+            <tr><td>Nonce</td><td>{{ block.nonce }}</td></tr>
+            <tr><td>Transactions</td><td>{{ block.transactions|length }}</td></tr>
+        </table>
+    </div>
+
+    <h2>📝 Transactions</h2>
+    <div class="transactions-list">
+        {% for tx in block.transactions %}
+        <div class="transaction-card">
+            <p><strong>From:</strong> <code>{{ tx.sender }}</code></p>
+            <p><strong>To:</strong> <code>{{ tx.receiver }}</code></p>
+            <p><strong>Amount:</strong> {{ "%.2f"|format(tx.amount) }} EDU</p>
+            <p><strong>Hash:</strong> <code>{{ tx.transaction_hash }}</code></p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

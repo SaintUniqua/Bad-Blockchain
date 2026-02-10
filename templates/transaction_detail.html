@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Transaction Details{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>📄 Transaction Details</h1>
+    
+    <div class="detail-card">
+        <table class="detail-table">
+            <tr><td>Transaction Hash</td><td><code>{{ transaction.transaction_hash }}</code></td></tr>
+            <tr><td>Block</td><td><a href="{{ url_for('block_detail', index=transaction.block_index) }}">Block #{{ transaction.block_index }}</a></td></tr>
+            <tr><td>Timestamp</td><td>{{ transaction.timestamp|format_timestamp }}</td></tr>
+            <tr><td>From</td><td><code>{{ transaction.sender }}</code></td></tr>
+            <tr><td>To</td><td><code>{{ transaction.receiver }}</code></td></tr>
+            <tr><td>Amount</td><td>{{ "%.2f"|format(transaction.amount) }} EDU</td></tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

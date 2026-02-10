@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}All Transactions{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>📜 All Transactions</h1>
+    
+    <div class="transactions-list">
+        {% for tx in transactions %}
+        <div class="transaction-card">
+            <div class="tx-header">
+                <span class="tx-block">Block #{{ tx.block_index }}</span>
+                <span class="tx-amount">{{ "%.2f"|format(tx.amount) }} EDU</span>
+            </div>
+            <div class="tx-details">
+                <p><strong>From:</strong> <code>{{ tx.sender|format_hash(24) }}</code></p>
+                <p><strong>To:</strong> <code>{{ tx.receiver|format_hash(24) }}</code></p>
+                <p><strong>Time:</strong> {{ tx.timestamp|format_timestamp }}</p>
+            </div>
+            <a href="{{ url_for('transaction_detail', transaction_hash=tx.transaction_hash) }}" class="btn btn-sm">Details</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h1>⚙️ Blockchain Settings</h1>
+        
+        <form method="POST" class="form">
+            <div class="form-group">
+                <label for="consensus">Consensus Mechanism</label>
+                <select id="consensus" name="consensus" class="form-control">
+                    <option value="pow" {% if blockchain.consensus == 'pow' %}selected{% endif %}>Proof of Work (PoW)</option>
+                    <option value="pos" {% if blockchain.consensus == 'pos' %}selected{% endif %}>Proof of Stake (PoS)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="difficulty">Mining Difficulty (1-6)</label>
+                <input type="number" id="difficulty" name="difficulty" min="1" max="6" 
+                       value="{{ blockchain.difficulty }}" class="form-control">
+                <small>Higher = more secure but slower mining</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="hash_algorithm">Hash Algorithm</label>
+                <select id="hash_algorithm" name="hash_algorithm" class="form-control">
+                    <option value="md5" {% if blockchain.hash_algorithm == 'md5' %}selected{% endif %}>MD5</option>
+                    <option value="sha1" {% if blockchain.hash_algorithm == 'sha1' %}selected{% endif %}>SHA-1</option>
+                    <option value="sha256" {% if blockchain.hash_algorithm == 'sha256' %}selected{% endif %}>SHA-256</option>
+                    <option value="sha512" {% if blockchain.hash_algorithm == 'sha512' %}selected{% endif %}>SHA-512</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="mining_reward">Mining Reward (EDU)</label>
+                <input type="number" id="mining_reward" name="mining_reward" step="1" min="1" 
+                       value="{{ blockchain.mining_reward }}" class="form-control">
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">Save Settings</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
