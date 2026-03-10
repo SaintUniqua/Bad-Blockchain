@@ -1,44 +1,1163 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<div class="container">
-    <h1>Wallet Dashboard</h1>
-    
-    <div class="wallet-card">
-        <div class="wallet-header">
-            <h2>{{ user.username }}</h2>
-            <p class="wallet-address">{{ user.address }}</p>
-        </div>
-        <div class="wallet-balance">
-            <span class="balance-label">Balance</span>
-            <span class="balance-value">{{ "%.2f"|format(user.balance) }} EDU</span>
-        </div>
-        <div class="wallet-actions">
-            <a href="{{ url_for('send_transaction') }}" class="btn btn-primary">Send EDU</a>
-            <a href="{{ url_for('mine') }}" class="btn btn-secondary">Mine Blocks</a>
+
+<style>
+/* ── Dashboard Layout ── */
+.db-wrap {
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.db-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.db-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+
+.db-badge {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    box-shadow: var(--shadow);
+}
+
+.db-badge svg { color: var(--primary); }
+.db-badge .dot {
+    width: 8px; height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:.6; transform:scale(1.3); }
+}
+
+/* ── Stat Cards Row ── */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.stat-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: var(--shadow);
+    transition: transform .2s, box-shadow .2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 14px 14px 0 0;
+}
+
+.stat-card.blue::before   { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.stat-card.green::before  { background: linear-gradient(90deg, #10b981, #34d399); }
+.stat-card.amber::before  { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.stat-card.purple::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+.stat-card.cyan::before   { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
+.stat-card.rose::before   { background: linear-gradient(90deg, #f43f5e, #fb7185); }
+
+.stat-icon-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stat-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.stat-card.blue   .stat-icon { background: rgba(59,130,246,.12); color: #3b82f6; }
+.stat-card.green  .stat-icon { background: rgba(16,185,129,.12); color: #10b981; }
+.stat-card.amber  .stat-icon { background: rgba(245,158,11,.12); color: #f59e0b; }
+.stat-card.purple .stat-icon { background: rgba(139,92,246,.12); color: #8b5cf6; }
+.stat-card.cyan   .stat-icon { background: rgba(6,182,212,.12);  color: #06b6d4; }
+.stat-card.rose   .stat-icon { background: rgba(244,63,94,.12);  color: #f43f5e; }
+
+.stat-label {
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    color: var(--text-tertiary);
+}
+
+.stat-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.stat-sub {
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-sub svg { flex-shrink: 0; }
+
+/* ── Main Grid (2 cols) ── */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+}
+
+.main-left { display: flex; flex-direction: column; gap: 20px; }
+.main-right { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Panel ── */
+.panel {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.panel-title svg { color: var(--primary); }
+
+.panel-action {
+    font-size: 0.76rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+    transition: opacity .2s;
+}
+.panel-action:hover { opacity: .7; }
+
+/* ── Table ── */
+.db-table { width: 100%; border-collapse: collapse; }
+
+.db-table th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--text-tertiary);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    white-space: nowrap;
+}
+
+.db-table td {
+    padding: 11px 14px;
+    font-size: 0.83rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.db-table tr:last-child td { border-bottom: none; }
+.db-table tr:hover td { background: var(--bg-secondary); }
+
+.hash-cell {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.78rem;
+    color: var(--primary);
+}
+
+/* Status badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+.badge-confirmed { background: rgba(16,185,129,.15); color: #10b981; }
+.badge-pending   { background: rgba(245,158,11,.15);  color: #f59e0b; }
+.badge-active    { background: rgba(59,130,246,.15);  color: #3b82f6; }
+
+.badge-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* ── Charts ── */
+.chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.chart-panel { background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+
+.chart-body { padding: 16px 20px 20px; }
+
+.sparkline-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 56px;
+}
+
+.sparkline-bar {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    transition: opacity .2s;
+    cursor: pointer;
+}
+
+.sparkline-bar:hover { opacity: .7; }
+
+/* SVG chart */
+.svg-chart { width: 100%; height: 120px; }
+
+/* ── Gas Tracker ── */
+.gas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+}
+
+.gas-item {
+    padding: 16px 20px;
+    text-align: center;
+    border-right: 1px solid var(--border-color);
+}
+
+.gas-item:last-child { border-right: none; }
+
+.gas-speed {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+}
+
+.gas-price {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.gas-slow   .gas-price { color: #10b981; }
+.gas-avg    .gas-price { color: #f59e0b; }
+.gas-fast   .gas-price { color: #f43f5e; }
+
+.gas-time {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-top: 3px;
+}
+
+/* ── Token Stats ── */
+.token-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.token-row:last-child { border-bottom: none; }
+
+.token-label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.83rem;
+    color: var(--text-secondary);
+}
+
+.token-label svg { color: var(--primary); }
+
+.token-val {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* ── Activity Feed ── */
+.feed-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-color);
+    align-items: flex-start;
+}
+
+.feed-item:last-child { border-bottom: none; }
+
+.feed-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+}
+
+.feed-dot-blue   { background: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.2); }
+.feed-dot-green  { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.2); }
+.feed-dot-amber  { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.2); }
+
+.feed-text { font-size: 0.81rem; color: var(--text-primary); line-height: 1.4; }
+.feed-time { font-size: 0.72rem; color: var(--text-tertiary); margin-top: 2px; }
+
+/* ── Right Side Panels ── */
+.metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.metric-row:last-child { border-bottom: none; }
+
+.metric-left {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.metric-icon {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-secondary);
+}
+
+.metric-name { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+.metric-value { font-size: 0.88rem; font-weight: 800; color: var(--text-primary); }
+
+/* ── Mini sparkline inline ── */
+.mini-spark { display: inline-flex; align-items: flex-end; gap: 2px; height: 20px; margin-left: 8px; vertical-align: middle; }
+.mini-spark span { width: 4px; border-radius: 1px; background: var(--primary); opacity: .6; }
+
+/* ── Wallet Section ── */
+.wallet-hero {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1a2744 50%, #0f1b35 100%);
+    border-radius: 14px;
+    padding: 24px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    border: 1px solid rgba(59,130,246,.3);
+    box-shadow: 0 4px 20px rgba(59,130,246,.15);
+}
+
+[data-theme="light"] .wallet-hero {
+    background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 50%, #1e3799 100%);
+}
+
+.wallet-hero-left { display: flex; flex-direction: column; gap: 6px; }
+
+.wallet-hero-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .7px; opacity: .7; }
+
+.wallet-hero-balance {
+    font-size: 2.4rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+.wallet-hero-addr {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.75rem;
+    opacity: .6;
+    margin-top: 4px;
+}
+
+.wallet-hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.hero-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 16px;
+    border-radius: 9px;
+    font-size: 0.83rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform .2s, opacity .2s;
+    cursor: pointer;
+    border: none;
+}
+
+.hero-btn:hover { transform: translateY(-1px); opacity: .9; }
+
+.hero-btn-primary { background: white; color: #1e3a8a; }
+.hero-btn-secondary { background: rgba(255,255,255,.15); color: white; border: 1px solid rgba(255,255,255,.25); }
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .main-right { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .stat-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 760px) {
+    .chart-grid { grid-template-columns: 1fr; }
+    .main-right { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .gas-grid { grid-template-columns: 1fr; }
+    .gas-item { border-right: none; border-bottom: 1px solid var(--border-color); }
+    .gas-item:last-child { border-bottom: none; }
+    .db-wrap { padding: 16px; }
+}
+
+@media (max-width: 480px) {
+    .stat-grid { grid-template-columns: 1fr; }
+}
+
+/* Progress bar for token supply */
+.supply-bar {
+    height: 5px;
+    background: var(--bg-tertiary);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.supply-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+}
+
+/* Trend indicator */
+.trend { display: inline-flex; align-items: center; gap: 2px; font-size: 0.72rem; font-weight: 700; }
+.trend-up   { color: #10b981; }
+.trend-down { color: #f43f5e; }
+</style>
+
+<div class="db-wrap">
+
+    <!-- Header -->
+    <div class="db-header">
+        <h1>Dashboard</h1>
+        <div class="db-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            Dashboard
+            <span class="dot"></span>
+            Live
         </div>
     </div>
 
-    <h2>Recent Transactions</h2>
-    {% if transactions %}
-    <div class="transactions-list">
-        {% for tx in transactions %}
-        <div class="transaction-card {% if tx.receiver == user.address %}tx-received{% else %}tx-sent{% endif %}">
-            <div class="tx-header">
-                <span class="tx-type">{% if tx.receiver == user.address %}Received{% else %}Sent{% endif %}</span>
-                <span class="tx-amount">{{ "%.2f"|format(tx.amount) }} EDU</span>
-            </div>
-            <div class="tx-details">
-                <p><strong>From:</strong> <code>{{ tx.sender|format_hash(16) }}</code></p>
-                <p><strong>To:</strong> <code>{{ tx.receiver|format_hash(16) }}</code></p>
-                <p><strong>Time:</strong> {{ tx.timestamp|format_timestamp }}</p>
-            </div>
-            <a href="{{ url_for('transaction_detail', transaction_hash=tx.transaction_hash) }}" class="btn btn-sm">View Details</a>
+    <!-- Wallet Hero -->
+    <div class="wallet-hero">
+        <div class="wallet-hero-left">
+            <span class="wallet-hero-label">Your Balance</span>
+            <span class="wallet-hero-balance">{{ "%.2f"|format(user.balance) }} <span style="font-size:1.3rem;opacity:.7">EDU</span></span>
+            <span class="wallet-hero-addr">{{ user.address }}</span>
         </div>
-        {% endfor %}
+        <div class="wallet-hero-actions">
+            <a href="{{ url_for('send_transaction') }}" class="hero-btn hero-btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+                Send EDU
+            </a>
+            <a href="{{ url_for('mine') }}" class="hero-btn hero-btn-secondary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                Mine Blocks
+            </a>
+        </div>
     </div>
-    {% else %}
-    <p class="no-data">No transactions yet</p>
-    {% endif %}
-</div>
+
+    <!-- ── Section 1: Network Overview Stats ── -->
+    <div class="stat-grid">
+
+        <!-- Total Transactions -->
+        <div class="stat-card blue">
+            <div class="stat-icon-row">
+                <span class="stat-label">Total Transactions</span>
+                <div class="stat-icon">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-value">{{ network_stats.total_transactions }}</div>
+            <div class="stat-sub">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                Across {{ chain_info.length }} blocks
+            </div>
+        </div>
+
+        <!-- TPS -->
+        <div class="stat-card green">
+            <div class="stat-icon-row">
+                <span class="stat-label">Transactions / Sec</span>
+                <div class="stat-icon">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-value">{{ network_stats.tps }}</div>
+            <div class="stat-sub">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Network throughput
+            </div>
+        </div>
+
+        <!-- Active Wallets -->
+        <div class="stat-card purple">
+            <div class="stat-icon-row">
+                <span class="stat-label">Active Wallets</span>
+                <div class="stat-icon">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-value">{{ network_stats.active_wallets }}</div>
+            <div class="stat-sub">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Unique addresses
+            </div>
+        </div>
+
+        <!-- Hash Rate -->
+        <div class="stat-card amber">
+            <div class="stat-icon-row">
+                <span class="stat-label">Hash Rate</span>
+                <div class="stat-icon">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-value">{{ network_stats.hash_rate }}</div>
+            <div class="stat-sub">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                {{ chain_info.consensus|upper }} · Difficulty {{ chain_info.difficulty }}
+            </div>
+        </div>
+
+        <!-- TVL -->
+        <div class="stat-card cyan">
+            <div class="stat-icon-row">
+                <span class="stat-label">Total Value Locked</span>
+                <div class="stat-icon">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-value">{{ network_stats.tvl }}</div>
+            <div class="stat-sub">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                EDU tokens staked
+            </div>
+        </div>
+
+        <!-- Pending Transactions -->
+        <div class="stat-card rose">
+            <div class="stat-icon-row">
+                <span class="stat-label">Pending TXs</span>
+                <div class="stat-icon">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="stat-value">{{ chain_info.pending_transactions }}</div>
+            <div class="stat-sub">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12"/></svg>
+                Awaiting confirmation
+            </div>
+        </div>
+
+    </div><!-- /stat-grid -->
+
+    <!-- ── Main Two-Column Grid ── -->
+    <div class="main-grid">
+        <div class="main-left">
+
+            <!-- Latest Blocks -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        </svg>
+                        Latest Blocks
+                    </div>
+                    <a href="{{ url_for('explorer') }}" class="panel-action">
+                        View all
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </a>
+                </div>
+                <div style="overflow-x:auto">
+                    <table class="db-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                                    Block #
+                                </th>
+                                <th>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    Timestamp
+                                </th>
+                                <th>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                                    TXs
+                                </th>
+                                <th>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    Reward
+                                </th>
+                                <th>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                    Hash
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for block in recent_blocks %}
+                            <tr>
+                                <td><strong>#{{ block.index }}</strong></td>
+                                <td style="color:var(--text-secondary)">{{ block.timestamp|format_timestamp }}</td>
+                                <td>
+                                    <span class="badge badge-confirmed">
+                                        <span class="badge-dot"></span>
+                                        {{ block.transactions|length }}
+                                    </span>
+                                </td>
+                                <td style="color:var(--success);font-weight:700">{{ chain_info.mining_reward }} EDU</td>
+                                <td class="hash-cell">{{ block.hash|format_hash(14) }}</td>
+                                <td>
+                                    <a href="{{ url_for('block_detail', index=block.index) }}" class="panel-action" style="font-size:0.75rem">
+                                        Details
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                        Recent Transactions
+                    </div>
+                    <a href="{{ url_for('transactions') }}" class="panel-action">
+                        View all
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </a>
+                </div>
+                {% if transactions %}
+                <div style="overflow-x:auto">
+                    <table class="db-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                    TX Hash
+                                </th>
+                                <th>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                    From
+                                </th>
+                                <th>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    To
+                                </th>
+                                <th>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    Amount
+                                </th>
+                                <th>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                    Fee
+                                </th>
+                                <th>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:middle"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tx in transactions %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('transaction_detail', transaction_hash=tx.transaction_hash) }}" class="hash-cell" style="text-decoration:none">
+                                        {{ tx.transaction_hash|format_hash(12) }}
+                                    </a>
+                                </td>
+                                <td class="hash-cell" style="font-size:.75rem;color:var(--text-secondary)">{{ tx.sender|format_hash(10) }}</td>
+                                <td class="hash-cell" style="font-size:.75rem;color:var(--text-secondary)">{{ tx.receiver|format_hash(10) }}</td>
+                                <td style="font-weight:700;color:{% if tx.receiver == user.address %}var(--success){% else %}var(--danger){% endif %}">
+                                    {% if tx.receiver == user.address %}+{% else %}-{% endif %}{{ "%.2f"|format(tx.amount) }} EDU
+                                </td>
+                                <td style="color:var(--text-secondary);font-size:.78rem">0.001 EDU</td>
+                                <td>
+                                    {% if tx.get('block_index') is not none %}
+                                        <span class="badge badge-confirmed"><span class="badge-dot"></span>Confirmed</span>
+                                    {% else %}
+                                        <span class="badge badge-pending"><span class="badge-dot"></span>Pending</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div style="padding:32px;text-align:center;color:var(--text-tertiary)">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 10px;display:block;opacity:.4"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    No transactions yet
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Charts -->
+            <div class="chart-grid">
+                <!-- Transaction Volume Chart -->
+                <div class="chart-panel">
+                    <div class="panel-head">
+                        <div class="panel-title">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
+                            </svg>
+                            TX Volume
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <div style="font-size:.72rem;color:var(--text-tertiary);margin-bottom:10px">Transactions per block</div>
+                        <div class="sparkline-row" id="txVolumeChart"></div>
+                        <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--text-tertiary);margin-top:6px">
+                            <span>Block 0</span>
+                            <span>Latest</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Block Time Chart -->
+                <div class="chart-panel">
+                    <div class="panel-head">
+                        <div class="panel-title">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            Block Time
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <div style="font-size:.72rem;color:var(--text-tertiary);margin-bottom:10px">Seconds between blocks</div>
+                        <svg class="svg-chart" id="blockTimeChart" viewBox="0 0 300 80" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+                                    <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <path id="btPath" fill="url(#lineGrad)" stroke="none"/>
+                            <path id="btLine" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--text-tertiary);margin-top:4px">
+                            <span>Earliest</span><span>Latest</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Addresses Chart -->
+                <div class="chart-panel">
+                    <div class="panel-head">
+                        <div class="panel-title">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                            Active Addresses
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <div style="font-size:.72rem;color:var(--text-tertiary);margin-bottom:10px">Unique addresses per block</div>
+                        <div class="sparkline-row" id="addrChart"></div>
+                        <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--text-tertiary);margin-top:6px">
+                            <span>Block 0</span><span>Latest</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Network Growth Chart -->
+                <div class="chart-panel">
+                    <div class="panel-head">
+                        <div class="panel-title">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+                            </svg>
+                            Network Growth
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <div style="font-size:.72rem;color:var(--text-tertiary);margin-bottom:10px">Cumulative transactions</div>
+                        <svg class="svg-chart" id="growthChart" viewBox="0 0 300 80" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+                                    <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <path id="growthPath" fill="url(#greenGrad)" stroke="none"/>
+                            <path id="growthLine" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <div style="display:flex;justify-content:space-between;font-size:.68rem;color:var(--text-tertiary);margin-top:4px">
+                            <span>Genesis</span><span>Latest</span>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /chart-grid -->
+
+        </div><!-- /main-left -->
+
+        <!-- ── Right Column ── -->
+        <div class="main-right">
+
+            <!-- Network Metrics -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
+                        </svg>
+                        Network Metrics
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-left">
+                        <div class="metric-icon" style="background:rgba(59,130,246,.1)">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                        </div>
+                        <div>
+                            <div class="metric-name">Block Height</div>
+                            <div class="metric-value">#{{ chain_info.length - 1 }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-left">
+                        <div class="metric-icon" style="background:rgba(245,158,11,.1)">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        </div>
+                        <div>
+                            <div class="metric-name">Gas / Fee</div>
+                            <div class="metric-value">0.001 EDU</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-left">
+                        <div class="metric-icon" style="background:rgba(16,185,129,.1)">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                        </div>
+                        <div>
+                            <div class="metric-name">Consensus</div>
+                            <div class="metric-value">{{ chain_info.consensus|upper }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-left">
+                        <div class="metric-icon" style="background:rgba(139,92,246,.1)">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div>
+                            <div class="metric-name">Mining Reward</div>
+                            <div class="metric-value">{{ chain_info.mining_reward }} EDU</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-row">
+                    <div class="metric-left">
+                        <div class="metric-icon" style="background:rgba(244,63,94,.1)">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        </div>
+                        <div>
+                            <div class="metric-name">Algorithm</div>
+                            <div class="metric-value">{{ chain_info.hash_algorithm|upper }}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Gas Tracker -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                        Gas / Fee Tracker
+                    </div>
+                </div>
+                <div class="gas-grid">
+                    <div class="gas-item gas-slow">
+                        <div class="gas-speed">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            Slow
+                        </div>
+                        <div class="gas-price">0.0005</div>
+                        <div class="gas-time">~5 min</div>
+                    </div>
+                    <div class="gas-item gas-avg">
+                        <div class="gas-speed">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            Average
+                        </div>
+                        <div class="gas-price">0.001</div>
+                        <div class="gas-time">~2 min</div>
+                    </div>
+                    <div class="gas-item gas-fast">
+                        <div class="gas-speed">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            Fast
+                        </div>
+                        <div class="gas-price">0.002</div>
+                        <div class="gas-time">&lt;30 sec</div>
+                    </div>
+                </div>
+                <div style="padding:12px 20px;border-top:1px solid var(--border-color)">
+                    <div style="font-size:.74rem;color:var(--text-tertiary);margin-bottom:6px">Avg confirmation time</div>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <div style="flex:1;background:var(--bg-secondary);height:6px;border-radius:3px;overflow:hidden">
+                            <div style="width:42%;height:100%;background:linear-gradient(90deg,#10b981,#f59e0b,#f43f5e);border-radius:3px"></div>
+                        </div>
+                        <span style="font-size:.78rem;font-weight:700;color:var(--text-primary)">~2 min</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Token Statistics -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+                        </svg>
+                        EDU Token Stats
+                    </div>
+                </div>
+
+                <div class="token-row">
+                    <div class="token-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                        Total Supply
+                    </div>
+                    <div>
+                        <div class="token-val">10,000,000 EDU</div>
+                        <div class="supply-bar"><div class="supply-fill" style="width:{{ network_stats.supply_pct }}%"></div></div>
+                    </div>
+                </div>
+
+                <div class="token-row">
+                    <div class="token-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        Circulating
+                    </div>
+                    <div class="token-val">{{ network_stats.circulating }} EDU</div>
+                </div>
+
+                <div class="token-row">
+                    <div class="token-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                        Token Transfers
+                    </div>
+                    <div class="token-val">{{ network_stats.token_transfers }}</div>
+                </div>
+
+                <div class="token-row">
+                    <div class="token-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Top Holder Balance
+                    </div>
+                    <div class="token-val">{{ network_stats.top_holder }} EDU</div>
+                </div>
+
+                <div class="token-row">
+                    <div class="token-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                        Market Cap (EDU)
+                    </div>
+                    <div class="token-val">{{ network_stats.market_cap }}</div>
+                </div>
+            </div>
+
+            <!-- Activity Feed -->
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="panel-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/>
+                        </svg>
+                        Activity Feed
+                    </div>
+                    <span style="font-size:.72rem;color:var(--text-tertiary)">Recent events</span>
+                </div>
+
+                {% if transactions %}
+                    {% for tx in transactions[:5] %}
+                    <div class="feed-item">
+                        <div class="feed-dot {% if tx.receiver == user.address %}feed-dot-green{% else %}feed-dot-blue{% endif %}"></div>
+                        <div>
+                            <div class="feed-text">
+                                {% if tx.receiver == user.address %}
+                                    <strong>Received</strong> {{ "%.2f"|format(tx.amount) }} EDU
+                                {% else %}
+                                    <strong>Sent</strong> {{ "%.2f"|format(tx.amount) }} EDU to {{ tx.receiver|format_hash(8) }}
+                                {% endif %}
+                            </div>
+                            <div class="feed-time">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:2px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                {{ tx.timestamp|format_timestamp }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    {% for block in recent_blocks[:4] %}
+                    <div class="feed-item">
+                        <div class="feed-dot feed-dot-blue"></div>
+                        <div>
+                            <div class="feed-text"><strong>Block #{{ block.index }}</strong> mined — {{ block.transactions|length }} transactions</div>
+                            <div class="feed-time">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:2px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                {{ block.timestamp|format_timestamp }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+        </div><!-- /main-right -->
+    </div><!-- /main-grid -->
+
+</div><!-- /db-wrap -->
+
+<script>
+// ── Chart Data from Jinja ──
+const blockData = {{ block_chart_data | tojson }};
+
+// ── TX Volume Bars ──
+function renderBars(containerId, values, color) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    const max = Math.max(...values, 1);
+    el.innerHTML = values.map(v => {
+        const h = Math.max(4, Math.round((v / max) * 52));
+        return `<div class="sparkline-bar" style="height:${h}px;background:${color};border-radius:3px 3px 0 0" title="${v}"></div>`;
+    }).join('');
+}
+
+// ── SVG Line Chart ──
+function renderLineChart(pathId, fillId, values, w, h) {
+    if (!values.length) return;
+    const max = Math.max(...values, 1);
+    const min = Math.min(...values);
+    const pts = values.map((v, i) => {
+        const x = (i / (values.length - 1 || 1)) * w;
+        const y = h - ((v - min) / (max - min || 1)) * (h - 10) - 2;
+        return [x, y];
+    });
+    const line = pts.map((p, i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`)).join(' ');
+    const fill = line + ` L${pts[pts.length-1][0]},${h} L0,${h} Z`;
+    const lineEl = document.getElementById(pathId);
+    const fillEl = document.getElementById(fillId);
+    if (lineEl) lineEl.setAttribute('d', line);
+    if (fillEl) fillEl.setAttribute('d', fill);
+}
+
+if (blockData) {
+    renderBars('txVolumeChart', blockData.tx_counts, '#3b82f6');
+    renderBars('addrChart', blockData.addr_counts, '#8b5cf6');
+    renderLineChart('btLine', 'btPath', blockData.block_times, 300, 80);
+    renderLineChart('growthLine', 'growthPath', blockData.cumulative_tx, 300, 80);
+}
+</script>
+
 {% endblock %}

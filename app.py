@@ -140,13 +140,124 @@ def logout():
 def dashboard():
     """User dashboard"""
     user = get_current_user()
-    
+
     # Sync balances from blockchain
     sync_wallet_balances()
     user = get_current_user()
-    
+
     transactions = blockchain.get_transactions_for_address(user.address)[-10:][::-1]
-    return render_template('dashboard.html', user=user, transactions=transactions)
+    chain_info = blockchain.get_chain_info()
+
+    # ── Recent blocks for the Latest Blocks table ──
+    recent_blocks = [block.to_dict() for block in blockchain.chain[-8:]][::-1]
+
+    # ── Network Overview Stats ──
+    all_tx = blockchain.get_all_transactions()
+    total_transactions = len(all_tx)
+
+    # Unique active addresses (exclude SYSTEM / GENESIS_POOL)
+    active_addresses = set()
+    token_transfers = 0
+    for tx in all_tx:
+        if tx['sender'] not in ('SYSTEM', 'GENESIS_POOL'):
+            active_addresses.add(tx['sender'])
+            token_transfers += 1
+        if tx['receiver'] not in ('SYSTEM', 'GENESIS_POOL'):
+            active_addresses.add(tx['receiver'])
+
+    # TPS: total_tx / elapsed time (genesis → latest block)
+    if len(blockchain.chain) > 1:
+        elapsed = blockchain.chain[-1].timestamp - blockchain.chain[0].timestamp
+        tps = round(total_transactions / elapsed, 4) if elapsed > 0 else 0
+    else:
+        tps = 0
+
+    # TVL: sum of all non-SYSTEM balances
+    tvl = 0.0
+    for wallet in wallet_manager.wallets.values():
+        balance = blockchain.get_balance(wallet.address)
+        if balance > 0:
+            tvl += balance
+
+    # Top holder
+    top_holder = 0.0
+    for wallet in wallet_manager.wallets.values():
+        bal = blockchain.get_balance(wallet.address)
+        if bal > top_holder:
+            top_holder = bal
+
+    # Circulating supply = total mined rewards
+    circulating = sum(
+        tx['amount'] for block in blockchain.chain
+        for tx in block.transactions
+        if tx['sender'] == 'SYSTEM' and tx['receiver'] not in ('GENESIS_POOL',)
+    )
+
+    # Supply % used for the bar
+    supply_pct = round(min(circulating / blockchain.total_supply * 100, 100), 1)
+
+    # Hash rate label based on difficulty
+    difficulty_label = {1: '~0.1 KH/s', 2: '~1 KH/s', 3: '~10 KH/s',
+                        4: '~100 KH/s', 5: '~1 MH/s', 6: '~10 MH/s'}
+    hash_rate = difficulty_label.get(blockchain.difficulty, f'D{blockchain.difficulty}')
+
+    network_stats = {
+        'total_transactions': total_transactions,
+        'tps': tps,
+        'active_wallets': len(active_addresses),
+        'hash_rate': hash_rate,
+        'tvl': f'{tvl:,.2f}',
+        'circulating': f'{circulating:,.2f}',
+        'supply_pct': supply_pct,
+        'token_transfers': token_transfers,
+        'top_holder': f'{top_holder:,.2f}',
+        'market_cap': f'{circulating:,.0f}',   # 1:1 for educational chain
+    }
+
+    # ── Chart data ──
+    blocks = blockchain.chain
+    tx_counts = [len(b.transactions) for b in blocks]
+
+    # Unique addresses per block
+    addr_counts = []
+    for b in blocks:
+        addrs = set()
+        for tx in b.transactions:
+            if tx['sender'] not in ('SYSTEM', 'GENESIS_POOL'):
+                addrs.add(tx['sender'])
+            if tx['receiver'] not in ('SYSTEM', 'GENESIS_POOL'):
+                addrs.add(tx['receiver'])
+        addr_counts.append(len(addrs))
+
+    # Block times (seconds between consecutive blocks)
+    block_times = []
+    for i in range(1, len(blocks)):
+        dt = round(blocks[i].timestamp - blocks[i - 1].timestamp, 1)
+        block_times.append(max(0, dt))
+
+    # Cumulative transaction count
+    cumulative_tx = []
+    running = 0
+    for b in blocks:
+        running += len(b.transactions)
+        cumulative_tx.append(running)
+
+    block_chart_data = {
+        'tx_counts': tx_counts,
+        'addr_counts': addr_counts,
+        'block_times': block_times,
+        'cumulative_tx': cumulative_tx,
+    }
+
+    return render_template(
+        'dashboard.html',
+        user=user,
+        transactions=transactions,
+        chain_info=chain_info,
+        recent_blocks=recent_blocks,
+        network_stats=network_stats,
+        block_chart_data=block_chart_data,
+    )
 
 
 @app.route('/send', methods=['GET', 'POST'])
