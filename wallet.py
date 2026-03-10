@@ -14,7 +14,7 @@ class Wallet:
         self.password_hash = self._hash_password(password)
         self.balance = balance
         self.created_at = None
-        self.avatar = '👤'  # Default avatar
+        self.avatar = 'user'  # Default avatar key
     
     def _generate_address(self, username: str) -> str:
         hash_input = f"{username}{secrets.token_hex(16)}"
@@ -52,7 +52,7 @@ class Wallet:
         wallet.password_hash = data['password_hash']
         wallet.balance = data.get('balance', 0.0)
         wallet.created_at = data.get('created_at')
-        wallet.avatar = data.get('avatar', '👤')  # Default to user icon if not set
+        wallet.avatar = data.get('avatar', 'user')  # Default to user icon if not set
         return wallet
 
 
@@ -130,7 +130,7 @@ class WalletManager:
                 blockchain.add_transaction('GENESIS_POOL', test_wallet.address, 10000.0)
                 # Mine it immediately to confirm the transaction
                 blockchain.mine_pending_transactions('SYSTEM', self.wallets)
-                print("✓ Test account created with 10,000 EDU from genesis pool")
+                print("âœ“ Test account created with 10,000 EDU from genesis pool")
                 return test_wallet
         else:
             # Wallet exists, but check if they have blockchain balance
@@ -141,7 +141,7 @@ class WalletManager:
                     # Wallet exists but no blockchain balance, give them initial funds
                     blockchain.add_transaction('GENESIS_POOL', test_wallet.address, 10000.0)
                     blockchain.mine_pending_transactions('SYSTEM', self.wallets)
-                    print("✓ Test account funded with 10,000 EDU from genesis pool")
+                    print("âœ“ Test account funded with 10,000 EDU from genesis pool")
                 else:
-                    print(f"✓ Test account already exists with balance: {blockchain_balance} EDU")
+                    print(f"âœ“ Test account already exists with balance: {blockchain_balance} EDU")
             return test_wallet

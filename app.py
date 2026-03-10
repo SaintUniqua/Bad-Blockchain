@@ -309,10 +309,15 @@ def profile():
     user = get_current_user()
     
     if request.method == 'POST':
-        # Handle avatar selection
-        avatar = request.form.get('avatar')
-        if avatar:
-            user.avatar = avatar
+        # Handle avatar — image upload takes priority over icon selection
+        avatar_image = request.form.get('avatar_image', '').strip()
+        avatar_key   = request.form.get('avatar', '').strip()
+        if avatar_image and avatar_image.startswith('data:image'):
+            user.avatar = avatar_image
+            wallet_manager.save_wallets()
+            flash('Profile picture updated!', 'success')
+        elif avatar_key:
+            user.avatar = avatar_key
             wallet_manager.save_wallets()
             flash('Profile picture updated!', 'success')
         
@@ -337,7 +342,7 @@ def profile():
     
     # Set default avatar if not set
     if not hasattr(user, 'avatar') or not user.avatar:
-        user.avatar = '👤'
+        user.avatar = 'user'
     
     return render_template('profile.html', user=user)
 
@@ -367,17 +372,17 @@ def api_chain_info():
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("🚀 Educational Blockchain Application Starting...")
+    print("ðŸš€ Educational Blockchain Application Starting...")
     print("=" * 60)
-    print(f"📊 Blockchain: {len(blockchain.chain)} blocks")
-    print(f"💛 Wallets: {wallet_manager.get_wallet_count()}")
-    print(f"⚙️  Consensus: {blockchain.consensus.upper()}")
-    print(f"🔐 Hash: {blockchain.hash_algorithm.upper()}")
-    print(f"💎 Reward: {blockchain.mining_reward} EDU")
-    print(f"💾 Persistence: ENABLED (blockchain_data.json)")
+    print(f"ðŸ“Š Blockchain: {len(blockchain.chain)} blocks")
+    print(f"ðŸ’› Wallets: {wallet_manager.get_wallet_count()}")
+    print(f"âš™ï¸  Consensus: {blockchain.consensus.upper()}")
+    print(f"ðŸ” Hash: {blockchain.hash_algorithm.upper()}")
+    print(f"ðŸ’Ž Reward: {blockchain.mining_reward} EDU")
+    print(f"ðŸ’¾ Persistence: ENABLED (blockchain_data.json)")
     print("=" * 60)
-    print("🧪 Test Account: username='bad', password='admin123'")
+    print("ðŸ§ª Test Account: username='bad', password='admin123'")
     print("=" * 60)
-    print("🌐 Running at: http://127.0.0.1:5000")
+    print("ðŸŒ Running at: http://127.0.0.1:5000")
     print("=" * 60)
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -2,14 +2,19 @@
 // Sidebar Toggle and Dark Mode Handler
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Remove no-transition class so CSS transitions work after initial paint
+    requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+            document.documentElement.classList.remove('no-transition');
+        });
+    });
     
     // ============================================
     // DARK MODE FUNCTIONALITY
     // ============================================
     
-    // Check for saved theme preference or default to 'light'
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', currentTheme);
+    // Theme already applied in <head> before paint — just read it here for reference
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
     
     // Dark mode toggle button
     const darkModeToggle = document.getElementById('darkModeToggle');
@@ -169,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
             navigator.clipboard.writeText(text).then(() => {
                 // Show feedback
                 const originalText = this.textContent;
-                this.textContent = '✓ Copied!';
+                this.textContent = 'âœ“ Copied!';
                 this.style.color = '#22c55e';
                 
                 setTimeout(() => {
@@ -285,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
         miningForm.addEventListener('submit', function(e) {
             const button = this.querySelector('button[type="submit"]');
             if (button) {
-                button.innerHTML = '⛏️ Mining... Please wait';
+                button.innerHTML = 'â›ï¸ Mining... Please wait';
                 button.disabled = true;
                 
                 // Add a pulsing animation
@@ -337,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // CONSOLE WELCOME MESSAGE
     // ============================================
     
-    console.log('%c⛓️ EduChain', 'font-size: 24px; font-weight: bold; color: #3b82f6;');
+    console.log('%câ›“ï¸ EduChain', 'font-size: 24px; font-weight: bold; color: #3b82f6;');
     console.log('%cEducational Blockchain Platform', 'font-size: 14px; color: #64748b;');
     console.log('%cTheme: ' + currentTheme, 'font-size: 12px; color: #94a3b8;');
     

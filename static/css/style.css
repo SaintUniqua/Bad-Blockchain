@@ -715,7 +715,21 @@ body {
 .stat-icon {
     font-size: 2rem;
     margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
 }
+
+.stat-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.stat-valid .stat-icon svg { stroke: var(--success); }
+.stat-invalid .stat-icon svg { stroke: var(--danger); }
 
 .stat-value {
     font-size: 2rem;
@@ -1344,6 +1358,39 @@ code {
     background: rgba(245, 158, 11, 0.1);
 }
 
+/* Page Title & Page Icon */
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.page-icon {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    flex-shrink: 0;
+    vertical-align: middle;
+    stroke: var(--primary);
+}
+
+/* Smaller inline icons (used inside headings like h2, h3, or bold text) */
+h2 .page-icon,
+h3 .page-icon,
+strong .page-icon,
+p .page-icon {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+}
+
 /* Animations */
 @keyframes pulse {
     0%, 100% {
@@ -1377,3 +1424,4 @@ code {
 button, a, .btn {
     transition-property: all;
 }
+.main-content-wrapper.no-sidebar { margin-left: 0; }

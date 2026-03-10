@@ -2,259 +2,298 @@
 {% block title %}Profile Settings{% endblock %}
 {% block content %}
 <div class="container">
-    <h1>👤 Profile Settings</h1>
-    
-    <div class="profile-container">
-        <!-- Avatar Selection -->
-        <div class="profile-section">
-            <h2>Profile Picture</h2>
-            <p class="section-description">Choose an avatar for your account</p>
-            
-            <form method="POST" class="avatar-form">
-                <div class="avatar-grid">
-                    <label class="avatar-option {% if user.avatar == '👤' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="👤" {% if user.avatar == '👤' %}checked{% endif %}>
-                        <div class="avatar-emoji">👤</div>
-                    </label>
-                    <label class="avatar-option {% if user.avatar == '😀' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="😀" {% if user.avatar == '😀' %}checked{% endif %}>
-                        <div class="avatar-emoji">😀</div>
-                    </label>
-                    <label class="avatar-option {% if user.avatar == '😎' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="😎" {% if user.avatar == '😎' %}checked{% endif %}>
-                        <div class="avatar-emoji">😎</div>
-                    </label>
-                    <label class="avatar-option {% if user.avatar == '🤓' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="🤓" {% if user.avatar == '🤓' %}checked{% endif %}>
-                        <div class="avatar-emoji">🤓</div>
-                    </label>
-                    <label class="avatar-option {% if user.avatar == '🧑‍💻' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="🧑‍💻" {% if user.avatar == '🧑‍💻' %}checked{% endif %}>
-                        <div class="avatar-emoji">🧑‍💻</div>
-                    </label>
-                    <label class="avatar-option {% if user.avatar == '🚀' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="🚀" {% if user.avatar == '🚀' %}checked{% endif %}>
-                        <div class="avatar-emoji">🚀</div>
-                    </label>
-                    <label class="avatar-option {% if user.avatar == '🦄' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="🦄" {% if user.avatar == '🦄' %}checked{% endif %}>
-                        <div class="avatar-emoji">🦄</div>
-                    </label>
-                    <label class="avatar-option {% if user.avatar == '🔥' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="🔥" {% if user.avatar == '🔥' %}checked{% endif %}>
-                        <div class="avatar-emoji">🔥</div>
-                    </label>
-                    <label class="avatar-option {% if user.avatar == '⚡' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="⚡" {% if user.avatar == '⚡' %}checked{% endif %}>
-                        <div class="avatar-emoji">⚡</div>
-                    </label>
-                    <label class="avatar-option {% if user.avatar == '💎' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="💎" {% if user.avatar == '💎' %}checked{% endif %}>
-                        <div class="avatar-emoji">💎</div>
-                    </label>
-                    <label class="avatar-option {% if user.avatar == '🌟' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="🌟" {% if user.avatar == '🌟' %}checked{% endif %}>
-                        <div class="avatar-emoji">🌟</div>
-                    </label>
-                    <label class="avatar-option {% if user.avatar == '🎮' %}selected{% endif %}">
-                        <input type="radio" name="avatar" value="🎮" {% if user.avatar == '🎮' %}checked{% endif %}>
-                        <div class="avatar-emoji">🎮</div>
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-primary">Save Avatar</button>
-            </form>
+
+    <h1 style="display:flex;align-items:center;gap:10px;margin-bottom:24px;font-size:1.4rem;font-weight:700;color:var(--text-primary)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile Settings
+    </h1>
+
+    <div class="prof-layout">
+
+        <!-- Left: live preview card -->
+        <div class="prof-card">
+            <div class="prof-avatar-ring" id="avatarDisplay">
+                {% if user.avatar and user.avatar.startswith('data:') %}
+                    <img src="{{ user.avatar }}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" alt="avatar">
+                {% else %}
+                    {% set av = user.avatar if user.avatar else 'user' %}
+                    {% if av == 'smile' %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9" r=".5" fill="white"/><circle cx="15" cy="9" r=".5" fill="white"/></svg>
+                    {% elif av == 'glasses' %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l2 2"/><path d="M22 9l-2 2"/><circle cx="8" cy="11" r="3"/><circle cx="16" cy="11" r="3"/><path d="M11 11h2"/></svg>
+                    {% elif av == 'book' %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    {% elif av == 'terminal' %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                    {% elif av == 'rocket' %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+                    {% elif av == 'feather' %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/></svg>
+                    {% elif av == 'flame' %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                    {% elif av == 'zap' %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    {% elif av == 'diamond' %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0Z"/></svg>
+                    {% elif av == 'star' %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    {% elif av == 'gamepad' %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="13" r=".5" fill="white"/><circle cx="18" cy="11" r=".5" fill="white"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+                    {% else %}
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="prof-name">{{ user.username }}</div>
+            <div class="prof-addr">{{ user.address }}</div>
+            <div class="prof-bal">{{ "%.2f"|format(user.balance) }} EDU</div>
         </div>
-        
-        <!-- Account Information -->
-        <div class="profile-section">
-            <h2>Account Information</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <span class="info-label">Username</span>
-                    <span class="info-value">{{ user.username }}</span>
+
+        <!-- Right panels -->
+        <div class="prof-panels">
+
+            <!-- Avatar section -->
+            <div class="prof-section">
+                <div class="prof-sec-head">
+                    <h2>Profile Picture</h2>
+                    <p>Choose an icon or upload your own photo</p>
                 </div>
-                <div class="info-item">
-                    <span class="info-label">Wallet Address</span>
-                    <span class="info-value"><code>{{ user.address }}</code></span>
+
+                <div class="av-tabs">
+                    <button class="av-tab active" data-tab="icons" type="button">Icons</button>
+                    <button class="av-tab" data-tab="upload" type="button">Upload Photo</button>
                 </div>
-                <div class="info-item">
-                    <span class="info-label">Balance</span>
-                    <span class="info-value">{{ "%.2f"|format(user.balance) }} EDU</span>
+
+                <!-- Icons Tab -->
+                <div class="av-panel active" id="tab-icons">
+                    <form method="POST" id="iconForm">
+                        <div class="av-grid">
+
+                            {% set cur = user.avatar if user.avatar else 'user' %}
+
+                            {% set avatars = [
+                                ('user',     'Default'),
+                                ('smile',    'Smile'),
+                                ('glasses',  'Cool'),
+                                ('book',     'Scholar'),
+                                ('terminal', 'Coder'),
+                                ('rocket',   'Pioneer'),
+                                ('feather',  'Writer'),
+                                ('flame',    'Fire'),
+                                ('zap',      'Zap'),
+                                ('diamond',  'Diamond'),
+                                ('star',     'Star'),
+                                ('gamepad',  'Gamer')
+                            ] %}
+
+                            {% for key, label in avatars %}
+                            <label class="av-item {{ 'av-active' if cur == key else '' }}">
+                                <input type="radio" name="avatar" value="{{ key }}" {{ 'checked' if cur == key else '' }}>
+                                <div class="av-cell">
+                                    {% if key == 'user' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    {% elif key == 'smile' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9" r=".5" fill="currentColor"/><circle cx="15" cy="9" r=".5" fill="currentColor"/></svg>
+                                    {% elif key == 'glasses' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l2 2"/><path d="M22 9l-2 2"/><circle cx="8" cy="11" r="3"/><circle cx="16" cy="11" r="3"/><path d="M11 11h2"/></svg>
+                                    {% elif key == 'book' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                                    {% elif key == 'terminal' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                                    {% elif key == 'rocket' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+                                    {% elif key == 'feather' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/></svg>
+                                    {% elif key == 'flame' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                                    {% elif key == 'zap' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                    {% elif key == 'diamond' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0Z"/></svg>
+                                    {% elif key == 'star' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                    {% elif key == 'gamepad' %}
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="13" r=".5" fill="currentColor"/><circle cx="18" cy="11" r=".5" fill="currentColor"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+                                    {% endif %}
+                                    <span>{{ label }}</span>
+                                </div>
+                            </label>
+                            {% endfor %}
+
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Icon</button>
+                    </form>
                 </div>
-                <div class="info-item">
-                    <span class="info-label">Account Created</span>
-                    <span class="info-value">{{ user.created_at if user.created_at else 'N/A' }}</span>
+
+                <!-- Upload Photo Tab -->
+                <div class="av-panel" id="tab-upload">
+                    <form method="POST" id="uploadForm">
+                        <input type="hidden" name="avatar_image" id="avatarImageInput">
+                        <div class="up-zone" id="uploadArea">
+                            <div id="upPlaceholder">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                <p>Click or drag a photo here</p>
+                                <span>JPG, PNG, GIF &mdash; max 2 MB</span>
+                            </div>
+                            <img id="upPreview" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:inherit" alt="preview">
+                        </div>
+                        <input type="file" id="fileInput" accept="image/*" style="display:none">
+                        <div style="display:flex;gap:10px;margin-top:14px">
+                            <button type="button" class="btn btn-secondary" id="chooseBtn">Choose File</button>
+                            <button type="submit" class="btn btn-primary" id="saveImgBtn" disabled>Save Photo</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
-        
-        <!-- Change Password -->
-        <div class="profile-section">
-            <h2>Change Password</h2>
-            <p class="section-description">Update your account password</p>
-            
-            <form method="POST" class="password-form">
-                <div class="form-group">
-                    <label for="current_password">Current Password</label>
-                    <input type="password" id="current_password" name="current_password" class="form-control">
+
+            <!-- Account Info -->
+            <div class="prof-section">
+                <div class="prof-sec-head"><h2>Account Information</h2></div>
+                <div class="info-list">
+                    <div class="info-row"><span class="ik">Username</span><span class="iv">{{ user.username }}</span></div>
+                    <div class="info-row"><span class="ik">Wallet Address</span><code class="iv">{{ user.address }}</code></div>
+                    <div class="info-row"><span class="ik">Balance</span><span class="iv">{{ "%.2f"|format(user.balance) }} EDU</span></div>
+                    <div class="info-row"><span class="ik">Member Since</span><span class="iv">{{ user.created_at if user.created_at else 'N/A' }}</span></div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="new_password">New Password</label>
-                    <input type="password" id="new_password" name="new_password" minlength="6" class="form-control">
+            </div>
+
+            <!-- Change Password -->
+            <div class="prof-section">
+                <div class="prof-sec-head">
+                    <h2>Change Password</h2>
+                    <p>Update your account password</p>
                 </div>
-                
-                <div class="form-group">
-                    <label for="confirm_password">Confirm New Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password" class="form-control">
-                </div>
-                
-                <button type="submit" class="btn btn-secondary">Update Password</button>
-            </form>
+                <form method="POST">
+                    <div class="form-group"><label>Current Password</label><input type="password" name="current_password" class="form-control" placeholder="Enter current password"></div>
+                    <div class="form-group"><label>New Password</label><input type="password" name="new_password" minlength="6" class="form-control" placeholder="Min. 6 characters"></div>
+                    <div class="form-group"><label>Confirm New Password</label><input type="password" name="confirm_password" class="form-control" placeholder="Repeat new password"></div>
+                    <button type="submit" class="btn btn-secondary">Update Password</button>
+                </form>
+            </div>
+
         </div>
     </div>
 </div>
 
 <style>
-.profile-container {
-    max-width: 900px;
-    margin: 0 auto;
-}
+.prof-layout { display:grid; grid-template-columns:200px 1fr; gap:20px; align-items:start; }
+.prof-card { background:var(--bg-primary); border:1px solid var(--border-color); border-radius:20px; padding:24px 16px; text-align:center; box-shadow:var(--shadow); position:sticky; top:100px; }
+.prof-avatar-ring { width:80px; height:80px; border-radius:22px; background:linear-gradient(135deg,#3b82f6,#6366f1); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; overflow:hidden; box-shadow:0 6px 20px rgba(59,130,246,.35); }
+.prof-name  { font-weight:700; font-size:1rem; color:var(--text-primary); margin-bottom:4px; }
+.prof-addr  { font-family:monospace; font-size:9px; color:var(--text-secondary); word-break:break-all; line-height:1.4; margin-bottom:10px; }
+.prof-bal   { display:inline-block; background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.25); color:var(--primary); font-size:12px; font-weight:700; padding:4px 12px; border-radius:20px; }
 
-.profile-section {
-    background: var(--bg-primary);
-    backdrop-filter: blur(20px);
-    padding: 2rem;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow);
-    margin-bottom: 2rem;
-}
+.prof-section { background:var(--bg-primary); border:1px solid var(--border-color); border-radius:20px; padding:24px; box-shadow:var(--shadow); margin-bottom:16px; }
+.prof-sec-head { margin-bottom:18px; }
+.prof-sec-head h2 { font-size:1rem; font-weight:700; color:var(--text-primary); margin:0 0 3px; }
+.prof-sec-head p  { font-size:13px; color:var(--text-secondary); margin:0; }
 
-[data-theme="dark"] .profile-section {
-    background: rgba(17, 24, 39, 0.5);
-}
+.av-tabs { display:flex; gap:4px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:12px; padding:4px; margin-bottom:18px; width:fit-content; }
+.av-tab  { padding:7px 18px; border-radius:9px; font-size:13px; font-weight:600; color:var(--text-secondary); background:none; border:none; cursor:pointer; transition:all .2s; }
+.av-tab:hover { color:var(--text-primary); }
+.av-tab.active { background:var(--bg-primary); color:var(--text-primary); box-shadow:0 1px 4px rgba(0,0,0,.1); border:1px solid var(--border-color); }
+.av-panel { display:none; }
+.av-panel.active { display:block; }
 
-.profile-section h2 {
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
-}
+.av-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(76px,1fr)); gap:8px; margin-bottom:16px; }
+.av-item { position:relative; cursor:pointer; }
+.av-item input[type="radio"] { position:absolute; opacity:0; width:0; height:0; }
+.av-cell { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:12px 6px; min-height:72px; background:var(--bg-secondary); border:1.5px solid var(--border-color); border-radius:12px; transition:all .2s; color:var(--text-secondary); }
+.av-cell svg  { stroke:var(--text-secondary); transition:stroke .2s; }
+.av-cell span { font-size:10.5px; font-weight:500; }
 
-.section-description {
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-}
+.av-item:hover .av-cell      { background:rgba(59,130,246,.08); border-color:rgba(59,130,246,.4); transform:translateY(-2px); }
+.av-item:hover .av-cell svg  { stroke:#3b82f6; }
+.av-item:hover .av-cell span { color:#3b82f6; }
 
-/* Avatar Grid */
-.avatar-form {
-    width: 100%;
-}
+.av-item.av-active .av-cell,
+.av-item input:checked ~ .av-cell { background:rgba(59,130,246,.1); border-color:#3b82f6; border-width:2px; box-shadow:0 0 0 3px rgba(59,130,246,.12); }
+.av-item.av-active .av-cell svg,
+.av-item input:checked ~ .av-cell svg  { stroke:#3b82f6; }
+.av-item.av-active .av-cell span,
+.av-item input:checked ~ .av-cell span { color:#3b82f6; font-weight:600; }
 
-.avatar-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
+.up-zone { border:2px dashed var(--border-color); border-radius:14px; min-height:150px; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; overflow:hidden; transition:all .2s; }
+.up-zone:hover { border-color:#3b82f6; background:rgba(59,130,246,.04); }
+#upPlaceholder { display:flex; flex-direction:column; align-items:center; gap:8px; color:var(--text-secondary); padding:20px; text-align:center; pointer-events:none; }
+#upPlaceholder p { font-size:14px; font-weight:500; color:var(--text-primary); margin:0; }
+#upPlaceholder span { font-size:11.5px; }
 
-.avatar-option {
-    position: relative;
-    cursor: pointer;
-    aspect-ratio: 1;
-}
+.info-list { display:flex; flex-direction:column; }
+.info-row  { display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid var(--border-color); gap:16px; }
+.info-row:last-child { border-bottom:none; }
+.ik { font-size:11.5px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:.06em; flex-shrink:0; }
+.iv { font-size:13.5px; color:var(--text-primary); font-weight:500; text-align:right; word-break:break-all; }
 
-.avatar-option input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.avatar-emoji {
-    width: 100%;
-    height: 100%;
-    background: var(--bg-tertiary);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    transition: all 0.3s ease;
-}
-
-[data-theme="dark"] .avatar-emoji {
-    background: rgba(59, 130, 246, 0.1);
-}
-
-.avatar-option:hover .avatar-emoji {
-    transform: scale(1.1);
-    border-color: var(--primary);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-}
-
-.avatar-option.selected .avatar-emoji,
-.avatar-option input[type="radio"]:checked + .avatar-emoji {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: var(--primary);
-    border-width: 3px;
-    box-shadow: 0 0 24px rgba(59, 130, 246, 0.4);
-}
-
-/* Info Grid */
-.info-grid {
-    display: grid;
-    gap: 1rem;
-}
-
-.info-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background: var(--bg-secondary);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-
-[data-theme="dark"] .info-item {
-    background: rgba(31, 41, 55, 0.5);
-}
-
-.info-label {
-    font-weight: 600;
-    color: var(--text-secondary);
-}
-
-.info-value {
-    color: var(--text-primary);
-    font-weight: 500;
-}
-
-/* Password Form */
-.password-form {
-    max-width: 500px;
-}
-
-.password-form .btn {
-    margin-top: 1rem;
-}
-
-@media (max-width: 768px) {
-    .avatar-grid {
-        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-        gap: 0.75rem;
-    }
-    
-    .avatar-emoji {
-        font-size: 2rem;
-    }
-    
-    .info-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-}
+@media(max-width:860px){ .prof-layout{ grid-template-columns:1fr; } .prof-card{ position:static; } }
 </style>
+
+<script>
+// SVG markup for JS live preview
+const SVG_INNER = {
+    user:     '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    smile:    '<circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9" r=".5" fill="white"/><circle cx="15" cy="9" r=".5" fill="white"/>',
+    glasses:  '<path d="M2 9l2 2"/><path d="M22 9l-2 2"/><circle cx="8" cy="11" r="3"/><circle cx="16" cy="11" r="3"/><path d="M11 11h2"/>',
+    book:     '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+    terminal: '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>',
+    rocket:   '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>',
+    feather:  '<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/>',
+    flame:    '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+    zap:      '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    diamond:  '<path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0Z"/>',
+    star:     '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    gamepad:  '<line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="13" r=".5" fill="white"/><circle cx="18" cy="11" r=".5" fill="white"/><rect x="2" y="6" width="20" height="12" rx="2"/>'
+};
+
+// Tabs
+document.querySelectorAll('.av-tab').forEach(t => {
+    t.addEventListener('click', function(){
+        document.querySelectorAll('.av-tab').forEach(x => x.classList.remove('active'));
+        document.querySelectorAll('.av-panel').forEach(x => x.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById('tab-'+this.dataset.tab).classList.add('active');
+    });
+});
+
+// Live preview on icon click
+document.querySelectorAll('.av-item input[type="radio"]').forEach(r => {
+    r.addEventListener('change', function(){
+        document.querySelectorAll('.av-item').forEach(i => i.classList.remove('av-active'));
+        this.closest('.av-item').classList.add('av-active');
+        const inner = SVG_INNER[this.value] || SVG_INNER['user'];
+        document.getElementById('avatarDisplay').innerHTML =
+            `<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+    });
+});
+
+// File upload
+const zone   = document.getElementById('uploadArea');
+const fInput = document.getElementById('fileInput');
+const prev   = document.getElementById('upPreview');
+const ph     = document.getElementById('upPlaceholder');
+const imgIn  = document.getElementById('avatarImageInput');
+const saveB  = document.getElementById('saveImgBtn');
+
+document.getElementById('chooseBtn').addEventListener('click', () => fInput.click());
+zone.addEventListener('click', () => fInput.click());
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor='#3b82f6'; });
+zone.addEventListener('dragleave', () => { zone.style.borderColor=''; });
+zone.addEventListener('drop', e => { e.preventDefault(); zone.style.borderColor=''; if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+fInput.addEventListener('change', function(){ if(this.files[0]) handleFile(this.files[0]); });
+
+function handleFile(file) {
+    if (file.size > 2*1024*1024) { alert('Image must be under 2 MB'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+        const url = e.target.result;
+        prev.src = url; prev.style.display='block'; ph.style.display='none';
+        zone.style.borderStyle='solid'; zone.style.borderColor='#3b82f6';
+        imgIn.value = url; saveB.disabled = false;
+        document.getElementById('avatarDisplay').innerHTML =
+            `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" alt="avatar">`;
+    };
+    reader.readAsDataURL(file);
+}
+</script>
+
 {% endblock %}

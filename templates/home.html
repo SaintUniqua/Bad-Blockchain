@@ -3,7 +3,7 @@
 {% block content %}
 <div class="hero">
     <div class="container">
-        <h1>🎓 Welcome to EduChain</h1>
+        <h1>Welcome to EduChain</h1>
         <p class="hero-subtitle">Learn Blockchain Technology Through Interactive Experience</p>
         {% if not user %}
         <div class="hero-actions">
@@ -17,28 +17,31 @@
 <div class="container">
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-icon">⛓️</div>
+            <div class="stat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+            
             <div class="stat-value">{{ chain_info.length }}</div>
             <div class="stat-label">Total Blocks</div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">📝</div>
+            <div class="stat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            
             <div class="stat-value">{{ chain_info.total_transactions }}</div>
             <div class="stat-label">Total Transactions</div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">⏳</div>
+            <div class="stat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            
             <div class="stat-value">{{ chain_info.pending_transactions }}</div>
             <div class="stat-label">Pending</div>
         </div>
         <div class="stat-card {% if chain_info.is_valid %}stat-valid{% else %}stat-invalid{% endif %}">
-            <div class="stat-icon">{% if chain_info.is_valid %}✓{% else %}✗{% endif %}</div>
+            <div class="stat-icon">{% if chain_info.is_valid %}<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>{% else %}<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>{% endif %}</div>
             <div class="stat-value">{% if chain_info.is_valid %}Valid{% else %}Invalid{% endif %}</div>
             <div class="stat-label">Blockchain Status</div>
         </div>
     </div>
 
-    <h2>🔗 Recent Blocks</h2>
+    <h2>Recent Blocks</h2>
     <div class="blocks-list">
         {% for block in recent_blocks %}
         <div class="block-card">

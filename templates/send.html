@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="form-container">
-        <h1>📤 Send EDU Tokens</h1>
+        <h1 class="page-title"><svg class="page-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send EDU Tokens</h1>
         <p class="balance-info">Available Balance: <strong>{{ "%.2f"|format(user.balance) }} EDU</strong></p>
         
         <form method="POST" class="form">
@@ -25,7 +25,7 @@
         </form>
         
         <div class="info-box">
-            <p><strong>ℹ️ Note:</strong> Transactions are added to the pending pool and will be confirmed when a block is mined.</p>
+            <p><strong><svg class="page-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Note:</strong> Transactions are added to the pending pool and will be confirmed when a block is mined.</p>
         </div>
     </div>
 </div>

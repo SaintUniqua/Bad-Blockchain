@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}EduChain{% endblock %} - Educational Blockchain</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>(function(){try{var t=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',t);document.documentElement.classList.add('no-transition');}catch(e){}}());</script>
+    <style>.no-transition *{transition:none!important;}</style>
 </head>
 <body>
     <div class="app-layout">
         <!-- Sidebar Navigation -->
+        {% if user %}
         <aside class="sidebar">
             <!-- Logo -->
-            <div class="sidebar-logo" title="EduChain">⛓️</div>
+            <div class="sidebar-logo" title="EduChain"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
             
             <!-- Navigation Items (User Actions Only) -->
             <nav class="nav-items">
@@ -78,7 +81,7 @@
                 <!-- User Profile Card -->
                 <div class="sidebar-user-card">
                     <div class="user-avatar">
-                        <span class="user-avatar-emoji">{{ user.avatar if user.avatar else '👤' }}</span>
+                        {% if user.avatar and user.avatar.startswith('data:') %}<img src="{{ user.avatar }}" style="width:100%;height:100%;object-fit:cover;border-radius:20px" alt="avatar">{% else %}<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>{% endif %}
                     </div>
                     <div class="user-info">
                         <div class="user-name">{{ user.username }}</div>
@@ -116,14 +119,15 @@
                 </svg>
             </div>
         </aside>
+        {% endif %}
         
         <!-- Main Content Wrapper -->
-        <div class="main-content-wrapper">
+        <div class="main-content-wrapper{% if not user %} no-sidebar{% endif %}">
             <!-- Top Navigation Bar -->
             <nav class="navbar">
                 <div class="container">
                     <div class="nav-brand">
-                        <a href="{{ url_for('home') }}"><span class="logo">⛓️ EduChain</span></a>
+                        <a href="{{ url_for('home') }}"><span class="logo">EduChain</span></a>
                     </div>
                     
                     <!-- Public Navigation Links (Right Side) -->
@@ -173,10 +177,10 @@
                                 {% for category, message in messages %}
                                     <div class="flash-message flash-{{ category }}">
                                         <span class="flash-icon">
-                                            {% if category == 'success' %}✓{% endif %}
-                                            {% if category == 'danger' %}✗{% endif %}
-                                            {% if category == 'warning' %}⚠{% endif %}
-                                            {% if category == 'info' %}ℹ{% endif %}
+                                            {% if category == 'success' %}<svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>{% endif %}
+                                            {% if category == 'danger' %}<svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/></svg>{% endif %}
+                                            {% if category == 'warning' %}<svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg>{% endif %}
+                                            {% if category == 'info' %}<svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' y1='8' x2='12' y2='12'/><line x1='12' y1='16' x2='12.01' y2='16'/></svg>{% endif %}
                                         </span>
                                         {{ message }}
                                     </div>
@@ -192,7 +196,7 @@
             <!-- Footer -->
             <footer class="footer">
                 <div class="container">
-                    <p>🎓 EduChain - Educational Blockchain Platform</p>
+                    <p>EduChain - Educational Blockchain Platform</p>
                     <p class="footer-note">For learning purposes only. Not a real cryptocurrency.</p>
                 </div>
             </footer>

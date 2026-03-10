@@ -2,11 +2,11 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div class="container">
-    <h1>💼 Wallet Dashboard</h1>
+    <h1>Wallet Dashboard</h1>
     
     <div class="wallet-card">
         <div class="wallet-header">
-            <h2>👤 {{ user.username }}</h2>
+            <h2>{{ user.username }}</h2>
             <p class="wallet-address">{{ user.address }}</p>
         </div>
         <div class="wallet-balance">
@@ -19,13 +19,13 @@
         </div>
     </div>
 
-    <h2>📜 Recent Transactions</h2>
+    <h2>Recent Transactions</h2>
     {% if transactions %}
     <div class="transactions-list">
         {% for tx in transactions %}
         <div class="transaction-card {% if tx.receiver == user.address %}tx-received{% else %}tx-sent{% endif %}">
             <div class="tx-header">
-                <span class="tx-type">{% if tx.receiver == user.address %}📥 Received{% else %}📤 Sent{% endif %}</span>
+                <span class="tx-type">{% if tx.receiver == user.address %}Received{% else %}Sent{% endif %}</span>
                 <span class="tx-amount">{{ "%.2f"|format(tx.amount) }} EDU</span>
             </div>
             <div class="tx-details">
